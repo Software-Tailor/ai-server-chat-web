@@ -13,7 +13,7 @@ in three files and **zero dependencies** — no npm, no bundler, no framework.
 python serve.py     →     http://localhost:8800
 ```
 
-*(Add a screenshot or short GIF here.)*
+![AI Server chat — streaming answer with the model picker and local-key notice](docs/screenshot.png)
 
 ---
 

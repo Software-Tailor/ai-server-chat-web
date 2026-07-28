@@ -16,12 +16,37 @@ const messages = [];
 let controller = null; // lets Stop abort an in-flight completion
 
 // ── rendering ──────────────────────────────────────────────────────────────────
+/**
+ * Render the small amount of Markdown chat models actually emit — **bold** and `code` —
+ * by building DOM NODES rather than assigning innerHTML. Models produce text, and text
+ * from a model must never be treated as markup: an innerHTML shortcut here would be a
+ * script-injection hole in every client that copied this file.
+ */
+function renderInline(target, text) {
+  target.textContent = '';
+  // Alternation over the two forms; capture groups tell us which matched.
+  const pattern = /\*\*([^*]+)\*\*|`([^`]+)`/g;
+  let lastIndex = 0;
+  for (let m = pattern.exec(text); m; m = pattern.exec(text)) {
+    if (m.index > lastIndex) {
+      target.appendChild(document.createTextNode(text.slice(lastIndex, m.index)));
+    }
+    const el = document.createElement(m[1] !== undefined ? 'strong' : 'code');
+    el.textContent = m[1] !== undefined ? m[1] : m[2];
+    target.appendChild(el);
+    lastIndex = pattern.lastIndex;
+  }
+  if (lastIndex < text.length) {
+    target.appendChild(document.createTextNode(text.slice(lastIndex)));
+  }
+}
+
 function addMessage(who, text, cls = '') {
   const el = document.createElement('div');
   el.className = `msg ${cls}`;
-  el.innerHTML = '<div class="who"></div><div class="body"></div>';
+  el.innerHTML = '<div class="who"></div><div class="body"></div>';   // static markup, no data
   el.querySelector('.who').textContent = who;
-  el.querySelector('.body').textContent = text;   // textContent: never inject HTML
+  renderInline(el.querySelector('.body'), text);
   log.appendChild(el);
   log.scrollTop = log.scrollHeight;
   return el.querySelector('.body');
@@ -132,7 +157,7 @@ async function send(text) {
           const delta = JSON.parse(payload).choices?.[0]?.delta?.content;
           if (delta) {
             answer += delta;
-            target.textContent = answer;
+            renderInline(target, answer);   // re-render so **bold** closes as it streams
             log.scrollTop = log.scrollHeight;
           }
         } catch { /* ignore keep-alive / partial frames */ }
@@ -140,7 +165,7 @@ async function send(text) {
     }
 
     if (answer) messages.push({ role: 'assistant', content: answer });
-    else target.textContent = '(no response)';
+    else target.textContent = '(no response)';   // plain text: not model output
   } catch (e) {
     if (e.name === 'AbortError') {
       // Keep whatever streamed before Stop so the context stays coherent.

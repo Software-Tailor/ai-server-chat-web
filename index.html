@@ -43,6 +43,10 @@
   }
   .msg .body { flex: 1; white-space: pre-wrap; word-wrap: break-word; }
   .msg.user .body { background: var(--user); padding: .55rem .8rem; border-radius: 8px; }
+  .msg .body code {
+    background: var(--user); padding: .1rem .3rem; border-radius: 4px;
+    font: 0.9em ui-monospace, Consolas, "SF Mono", monospace;
+  }
   .msg.error .body {
     background: var(--err-bg); color: var(--err-fg);
     padding: .55rem .8rem; border-radius: 8px; white-space: pre-wrap;
