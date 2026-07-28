@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Server chat</title>
+<style>
+  /* Single file, no framework, no build. Dark/light follows the OS. */
+  :root {
+    --bg: #ffffff; --fg: #1b1f24; --muted: #5b6470; --line: #e3e7ec;
+    --user: #eef2f7; --accent: #2563eb; --err-bg: #fdecec; --err-fg: #9b1c1c;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #14171a; --fg: #e8eaed; --muted: #9aa4b2; --line: #2a2f36;
+      --user: #1e242b; --accent: #60a5fa; --err-bg: #3a1d1d; --err-fg: #fca5a5;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--fg);
+    font: 15px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    display: flex; flex-direction: column; height: 100vh;
+  }
+  header {
+    display: flex; gap: .75rem; align-items: center;
+    padding: .7rem 1rem; border-bottom: 1px solid var(--line); flex-wrap: wrap;
+  }
+  header h1 { font-size: 1rem; margin: 0; font-weight: 600; }
+  header .spacer { flex: 1; }
+  select, button, textarea {
+    font: inherit; color: inherit; background: var(--bg);
+    border: 1px solid var(--line); border-radius: 8px; padding: .4rem .6rem;
+  }
+  button { cursor: pointer; }
+  button.primary { background: var(--accent); color: #fff; border-color: transparent; }
+  button:disabled { opacity: .5; cursor: default; }
+  #log { flex: 1; overflow-y: auto; padding: 1rem; }
+  .msg { max-width: 46rem; margin: 0 auto 1rem; display: flex; gap: .7rem; }
+  .msg .who {
+    flex: 0 0 4.5rem; color: var(--muted); font-size: .8rem;
+    text-transform: uppercase; letter-spacing: .03em; padding-top: .15rem;
+  }
+  .msg .body { flex: 1; white-space: pre-wrap; word-wrap: break-word; }
+  .msg.user .body { background: var(--user); padding: .55rem .8rem; border-radius: 8px; }
+  .msg.error .body {
+    background: var(--err-bg); color: var(--err-fg);
+    padding: .55rem .8rem; border-radius: 8px; white-space: pre-wrap;
+  }
+  footer { border-top: 1px solid var(--line); padding: .75rem 1rem; }
+  .composer { max-width: 46rem; margin: 0 auto; display: flex; gap: .5rem; }
+  textarea { flex: 1; resize: none; min-height: 2.6rem; max-height: 12rem; }
+  .hint { max-width: 46rem; margin: .4rem auto 0; color: var(--muted); font-size: .78rem; }
+</style>
+</head>
+<body>
+  <header>
+    <h1>AI Server chat</h1>
+    <select id="model" title="Models installed on your server"></select>
+    <span class="spacer"></span>
+    <span id="backend" class="hint" style="margin:0"></span>
+    <button id="clear" title="Clear the conversation">Clear</button>
+  </header>
+
+  <div id="log">
+    <div class="msg">
+      <div class="who">AI</div>
+      <div class="body">Ask me anything. Everything runs on your own AI Server — nothing is sent to a third party unless you pick a cloud model.</div>
+    </div>
+  </div>
+
+  <footer>
+    <form class="composer" id="composer">
+      <textarea id="input" placeholder="Send a message…  (Enter to send, Shift+Enter for a new line)" autofocus></textarea>
+      <button class="primary" id="send" type="submit">Send</button>
+      <button id="stop" type="button" hidden>Stop</button>
+    </form>
+    <div class="hint">Served locally by <code>serve.py</code> — your API key stays on this machine and never reaches the browser.</div>
+  </footer>
+
+<script src="app.js"></script>
+</body>
+</html>

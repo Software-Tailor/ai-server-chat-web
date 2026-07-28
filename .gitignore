@@ -1,0 +1,6 @@
+# Secrets — never commit a real key
+.env
+
+# Python
+__pycache__/
+*.py[cod]
