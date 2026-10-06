@@ -6,7 +6,7 @@ Serves index.html and forwards /v1/* to your AI Server.
 
 WHY A PROXY IS NEEDED
 ---------------------
-AI Server does not send CORS headers, and its OPTIONS preflight requires auth (which
+By default AI Server sends no CORS headers (AISUITE_CORS_ORIGINS can allow origins), and its OPTIONS preflight requires auth (which
 browsers never send on a preflight). So a page opened from file:// or another origin
 cannot call the server directly — the browser blocks it. This ~150-line proxy makes
 the page and the API the SAME origin, which removes the problem entirely.

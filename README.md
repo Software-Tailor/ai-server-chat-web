@@ -1,6 +1,6 @@
 # AI Server chat (web)
 
-A complete streaming chat UI for **[Software Tailor AI Server](https://softwaretailor.com/docs/ai-server/index.htm)**
+A complete streaming chat UI for **[Software Tailor AI Server](https://softwaretailor.com/docs/ai-server/)**
 in three files and **zero dependencies** — no npm, no bundler, no framework.
 
 - Streams replies token by token
@@ -50,7 +50,7 @@ Then open <http://localhost:8800>. Use `PORT=9000 python serve.py` to move it.
 
 The honest answer, because it's the first thing you'll wonder:
 
-**AI Server doesn't send CORS headers**, and its `OPTIONS` preflight requires authentication — which
+**By default AI Server sends no CORS headers** (operators can allow named origins with `AISUITE_CORS_ORIGINS`), and without that its `OPTIONS` preflight requires authentication — which
 browsers never send on a preflight. A page opened from `file://` or hosted on a different origin is
 therefore blocked by the browser before the request is even made.
 
@@ -104,7 +104,7 @@ Keys apply immediately on the server side; `serve.py` only reads yours at startu
 
 ## Learn more
 
-- [AI Server API & clients](https://softwaretailor.com/docs/ai-server/api-clients.htm)
+- [AI Server API & clients](https://softwaretailor.com/docs/ai-server/api/)
 - [ai-server-quickstarts](https://github.com/Software-Tailor/ai-server-quickstarts) — the same API in
   curl, Python, Node.js, C# and PowerShell
 
